@@ -50,7 +50,7 @@ import org.docx4j.convert.out.common.AbstractWmlConversionContext;
 import org.docx4j.convert.out.common.writer.AbstractSimpleWriter;
 import org.docx4j.convert.out.common.writer.AbstractTableWriterModel;
 import org.docx4j.convert.out.common.writer.AbstractTableWriterModelCell;
-import org.docx4j.convert.out.common.writer.AbstractTableWriterModelRow;
+//import org.docx4j.convert.out.common.writer.AbstractTableWriterModelRow;
 import org.docx4j.jaxb.Context;
 import org.docx4j.model.properties.Property;
 import org.docx4j.model.properties.PropertyFactory;
@@ -66,6 +66,8 @@ import org.docx4j.model.properties.table.CellMarginTop;
 import org.docx4j.model.properties.table.tc.Shading;
 import org.docx4j.model.properties.table.tc.TextAlignmentVertical;
 import org.docx4j.model.properties.table.tr.TrHeight;
+import org.docx4j.model.table.TableModelCell;
+import org.docx4j.model.table.TableModelRow;
 import org.docx4j.wml.CTBorder;
 import org.docx4j.wml.CTHeight;
 import org.docx4j.wml.CTShd;
@@ -224,7 +226,7 @@ public abstract class SessionAwareAbstractTableWriter extends AbstractSimpleWrit
     int cellPropertiesRowSize = -1;
     boolean inHeader = (table.getHeaderMaxRow() > -1);
 
-	AbstractTableWriterModelRow rowModel = null;
+	TableModelRow rowModel = null;
 	Element rowContainer = null;
 	Element row = null;
 	Element cellNode = null;
@@ -248,8 +250,8 @@ public abstract class SessionAwareAbstractTableWriter extends AbstractSimpleWrit
 	
 	applyTableRowContainerCustomAttributes(context, table, transformState, rowContainer, inHeader);
 	
-    for (int rowIndex = 0; rowIndex < table.getCells().size(); rowIndex++) {
-			rowModel = table.getCells().get(rowIndex);
+    for (int rowIndex = 0; rowIndex < table.getRows().size(); rowIndex++) {
+			rowModel = table.getRows().get(rowIndex);
 			
 			if ((inHeader) && (rowIndex > table.getHeaderMaxRow())) {
 				rowContainer = createNode(doc, tableRoot, NODE_TABLE_BODY);
@@ -277,9 +279,9 @@ public abstract class SessionAwareAbstractTableWriter extends AbstractSimpleWrit
 			cellPropertiesRowSize = cellProperties.size();
 				
 			int cellCounter=0;
-			for (AbstractTableWriterModelCell cell : rowModel.getRowContents()) {
+			for (TableModelCell _cell : rowModel.getRowContents()) {
 				// process cell
-				
+				AbstractTableWriterModelCell cell = (AbstractTableWriterModelCell) _cell;
 				if (cell.isDummy()) {
 					if (!cell.isVMerged()) {
 						//Dummy-Cells resulting from vertical merged cells shouldn't be included
